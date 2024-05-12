@@ -8,11 +8,12 @@ public class Main {
         double amount = 0;
         Consulta consulta = new Consulta();
         double resultado = 0;
-
+        String currency = "";
+        String base = "";
         while (true) {
 
-            System.out.println("---------------------------------------");
             System.out.print("""
+                    ---------------------------------------
                     Bienvenido/a al conversor de monedas
 
                     1)peso mexicano -> dolar
@@ -23,10 +24,8 @@ public class Main {
                     6)dolar -> real
 
                     7)Salir
-                    """);   
-            System.out.println("---------------------------------------");
-            System.out.print("Digite una opcion: ");
-
+                    ---------------------------------------
+                    Digite una opcion:""");  
             opcion = input.nextInt();
 
             if (opcion == 7){
@@ -41,25 +40,39 @@ public class Main {
             System.out.print("Digite cantidad: ");
             amount = input.nextDouble();
 
-            if (opcion == 1) {
-                resultado = consulta.conversor(amount, "MXN", "USD");
-                System.out.printf("Equivalente a $%.2f Dolares %n", resultado);
-            }else if (opcion == 2){
-                resultado = consulta.conversor(amount, "USD", "MXN");
-                System.out.printf("Equivalente a $%.2f Pesos mexicanos %n", resultado);
-            }else if (opcion == 3){
-                resultado = consulta.conversor(amount, "ARS", "BRL");
-                System.out.printf("Equivalente a $%.2f Reales brasileños %n", resultado);
-            }else if (opcion == 4){
-                resultado = consulta.conversor(amount, "BRL", "ARS");
-                System.out.printf("Equivalente a $%.2f Pesos Argentinos %n", resultado);
-            }else if (opcion == 5){
-                resultado = consulta.conversor(amount, "BRL", "USD");
-                System.out.printf("Equivalente a $%.2f Dolares %n", resultado);
-            }else if (opcion == 6){
-                resultado = consulta.conversor(amount, "USD", "BRL");
-                System.out.printf("Equivalente a $%.2f Reales Brasileños %n", resultado);
+            switch (opcion) {
+                case 1:
+                    currency = "USD";
+                    base = "MXN";
+                    break;
+                case 2:
+                    currency = "MXN";
+                    base = "USD";
+                    break;
+                case 3:
+                    currency = "BRL";
+                    base = "ARS";
+                    break;
+                case 4:
+                    currency = "ARS";
+                    base = "BRL";
+                    break;
+                case 5:
+                    currency = "USD";
+                    base = "BRL";
+                    break;
+                case 6:
+                    currency = "BRL";
+                    base = "USD";
+                    break;
+                default:
+                    // por definir
+                    break;
             }
+            
+            resultado = consulta.conversor(amount, base, currency);
+            System.out.printf("Equivalente a $%.2f %s %n", resultado, currency);
         }
+        input.close();
     }
 }
