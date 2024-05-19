@@ -1,10 +1,3 @@
-// otra posible solucion podria ser cambiar el menu
-// en lugar de dar opciones de cambio preestablecidas
-// se podria preguntar al usuario la moneda de origen y la moneda de cambio
-// luego la cantidad a cambiar y hacer el request
-// de esta manera no seria necesario el switch
-// pero se necesitarian mas interacciones del usuario
-
 import java.io.IOException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -15,6 +8,7 @@ public class Main {
         int opcion = 0;
         double amount = 0;
         Consulta consulta = new Consulta();
+        Historial historial = new Historial();
         double resultado = 0;
         String currency = "";
         String base = "";
@@ -26,23 +20,25 @@ public class Main {
                         ---------------------------------------
                         Bienvenido/a al conversor de monedas
     
-                        1)peso mexicano -> dolar
-                        2)dolar -> peso mexicano
-                        3)peso argentino -> real
-                        4)real -> peso argentino
-                        5)real -> dolar
-                        6)dolar -> real
-    
-                        7)Salir
+                        1)dólar -> peso argentino
+                        2)peso argentino -> dólar
+                        3)dólar -> real brasileño
+                        4)real brasileño -> dólar
+                        5)dólar -> peso colombiano
+                        6)peso colambiano -> dólar
+                        7)dólar -> peso mexicano
+                        8)peso mexicano -> dólar
+
+                        9)Salir
                         ---------------------------------------
                         Digite una opcion:""");  
                 opcion = input.nextInt();
                 
-                if (opcion == 7){
+                if (opcion == 9){
                     System.out.println("Gracias por usar nuestro programa:D");
                     break;
                 }
-                if (opcion<1 || opcion>7){
+                if (opcion<1 || opcion>9){
                     System.out.println("Opcion invalida");
                     continue;
                 }
@@ -52,33 +48,44 @@ public class Main {
                 
                 switch (opcion) {
                     case 1:
-                        currency = "USD";
-                        base = "MXN";
+                        base = "USD";
+                        currency = "ARS";
                         break;
                     case 2:
-                        currency = "MXN";
-                        base = "USD";
+                        base = "ARS";
+                        currency = "USD";
                         break;
                     case 3:
+                        base = "USD";
                         currency = "BRL";
-                        base = "ARS";
                         break;
                     case 4:
-                        currency = "ARS";
                         base = "BRL";
+                        currency = "USD";
                         break;
                     case 5:
-                        currency = "USD";
-                        base = "BRL";
+                        base = "USD";
+                        currency = "COP";
                         break;
                     case 6:
-                        currency = "BRL";
+                        base = "COP";
+                        currency = "USD";
+                        break;
+                    case 7:
                         base = "USD";
+                        currency = "MXN";
+                        break;
+                    case 8:
+                        base = "MXN";
+                        currency = "USD";
                         break;
                 }
 
                 resultado = consulta.conversor(amount, base, currency);
-                System.out.printf("Equivalente a $%.2f %s %n", resultado, currency);
+                String message = String.format("$%.2f %s es equivalente a $%.2f %s", amount, base, resultado, currency);
+
+                System.out.println(message);
+                historial.saveHistory(message);
 
             } catch (InputMismatchException e) {
                 System.out.println("No es numero entero");
