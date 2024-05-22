@@ -1,88 +1,70 @@
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.InputMismatchException;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
-        int opcion = 0;
-        double amount = 0;
         Consulta consulta = new Consulta();
         Historial historial = new Historial();
-        double resultado = 0;
-        String currency = "";
+        Map<Integer, String> rates = new HashMap<>(){{
+            put(1, "USD");
+            put(2, "ARS");
+            put(3, "BRL");
+            put(4, "COP");
+            put(5, "MXN");
+        }};
+        double amount = 0;
+        double result = 0;
+        int currency_option = 0;
+        int base_option = 0;
         String base = "";
+        String currency = "";
+        String menu = """
+            ---------------------------------------
+            1)dólar
+            2)peso argentino
+            3)real brasileño
+            4)peso colombiano
+            5)peso mexicano
 
+            6)Salir
+            ---------------------------------------
+            Digite una opcion:""";
+
+        System.out.println("Bienvenido/a al conversor de monedas");
         while (true) {
 
             try {
-                System.out.print("""
-                        ---------------------------------------
-                        Bienvenido/a al conversor de monedas
-    
-                        1)dólar -> peso argentino
-                        2)peso argentino -> dólar
-                        3)dólar -> real brasileño
-                        4)real brasileño -> dólar
-                        5)dólar -> peso colombiano
-                        6)peso colambiano -> dólar
-                        7)dólar -> peso mexicano
-                        8)peso mexicano -> dólar
-
-                        9)Salir
-                        ---------------------------------------
-                        Digite una opcion:""");  
-                opcion = input.nextInt();
+                System.out.print("Elija su moneda de origen \n" + menu);  
+                base_option = input.nextInt();
                 
-                if (opcion == 9){
-                    System.out.println("Gracias por usar nuestro programa:D");
+                if (isExit(base_option)){
                     break;
                 }
-                if (opcion<1 || opcion>9){
-                    System.out.println("Opcion invalida");
+                if (!isCorrect(base_option)){
                     continue;
                 }
-    
-                System.out.print("Digite cantidad: ");
-                amount = input.nextDouble();
                 
-                switch (opcion) {
-                    case 1:
-                        base = "USD";
-                        currency = "ARS";
-                        break;
-                    case 2:
-                        base = "ARS";
-                        currency = "USD";
-                        break;
-                    case 3:
-                        base = "USD";
-                        currency = "BRL";
-                        break;
-                    case 4:
-                        base = "BRL";
-                        currency = "USD";
-                        break;
-                    case 5:
-                        base = "USD";
-                        currency = "COP";
-                        break;
-                    case 6:
-                        base = "COP";
-                        currency = "USD";
-                        break;
-                    case 7:
-                        base = "USD";
-                        currency = "MXN";
-                        break;
-                    case 8:
-                        base = "MXN";
-                        currency = "USD";
-                        break;
+                System.out.print("Elija su moneda a convertir \n" + menu);
+                currency_option = input.nextInt();
+
+                if (isExit(currency_option)){
+                    break;
+                }
+                if (!isCorrect(currency_option)){
+                    continue;
                 }
 
-                resultado = consulta.conversor(amount, base, currency);
-                String message = String.format("$%.2f %s es equivalente a $%.2f %s", amount, base, resultado, currency);
+                System.out.print("Digite cantidad: ");
+                amount = input.nextDouble();
+
+                base = rates.get(base_option);
+                currency = rates.get(currency_option);
+                result = consulta.conversor(amount, base, currency);
+                String message = String.format("$%.2f %s es equivalente a $%.2f %s", amount, base, result, currency);
 
                 System.out.println(message);
                 historial.saveHistory(message);
@@ -96,5 +78,21 @@ public class Main {
             }
         }
         input.close();
+    }
+
+    public static boolean isExit(int opcion){
+        if (opcion == 6){
+            System.out.println("Gracias por usar nuestro programa:D");
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isCorrect(int opcion){
+        if (opcion<1 || opcion>6){
+            System.out.println("Opcion invalida");
+            return false;
+        }
+        return true;
     }
 }
